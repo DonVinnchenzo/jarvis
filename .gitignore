@@ -36,3 +36,4 @@ backups/
 # Logs
 *.log
 logs/
+.heartbeat

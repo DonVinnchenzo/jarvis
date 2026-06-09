@@ -2,6 +2,7 @@ from fastapi import FastAPI, Request
 from fastapi.responses import JSONResponse
 
 from src.config import get_settings
+from src.routes import children, contacts, events, health, notes, reminders, search, upcoming
 
 app = FastAPI(title="Jarvis API", version="0.1.0")
 
@@ -29,10 +30,15 @@ async def api_key_middleware(request: Request, call_next):
     return await call_next(request)
 
 
-@app.get("/api/health")
-async def health():
-    """Health check endpoint. No auth required."""
-    return {"status": "ok"}
+# Wire all routers
+app.include_router(health.router, prefix="/api", tags=["health"])
+app.include_router(contacts.router, prefix="/api", tags=["contacts"])
+app.include_router(events.router, prefix="/api", tags=["events"])
+app.include_router(children.router, prefix="/api", tags=["children"])
+app.include_router(notes.router, prefix="/api", tags=["notes"])
+app.include_router(upcoming.router, prefix="/api", tags=["upcoming"])
+app.include_router(search.router, prefix="/api", tags=["search"])
+app.include_router(reminders.router, prefix="/api", tags=["reminders"])
 
 
 if __name__ == "__main__":
