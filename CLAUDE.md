@@ -2,6 +2,8 @@
 
 Household automation assistant for Vincent & Christianne.
 
+> **New session? Read `STATUS.md` first.** It tells you exactly where the project is, what was done, and what to do next. This CLAUDE.md covers architecture and rules; STATUS.md covers current state.
+
 ---
 
 ## What is Jarvis
@@ -93,6 +95,7 @@ Skills live in `.claude/skills/`. Each skill is a repeatable process that ensure
 - `add-module` — Propose and build a new Jarvis module (follows full 5-phase workflow)
 - `build-skill` — Create new skills when repeating patterns are detected. Claude should PROACTIVELY suggest this when it notices repeated multi-step operations without a skill
 - `post-incident` — Document failures and encode prevention rules
+- `session-handoff` — **MANDATORY at end of every session.** Update STATUS.md so the next Claude session picks up exactly where this one left off. Also run after any significant action.
 
 When a user asks something, Claude picks the right skill. If no skill exists for the request, Claude proposes creating one via `build-skill`.
 
@@ -118,6 +121,7 @@ Claude should proactively trigger `build-skill` when it detects:
 8. **Skills ensure consistency** — Every repeatable process is a skill. Claude follows skills, doesn't improvise. When a pattern repeats without a skill, create one via `build-skill`.
 9. **Git tracks everything** — All codebase changes go through git. Claude commits with Conventional Commits.
 10. **Christianne-first UX** — Design every interaction assuming Christianne is the user. If she can use it naturally without instructions, Vincent can too. Zero jargon as default. Never require commands, syntax, or technical knowledge. The `help` skill exists but ideally should never be needed.
+11. **Sessions are ephemeral, STATUS.md is permanent** — Claude sessions can disconnect at any time. STATUS.md is always up to date. Run `session-handoff` after significant actions and before ending any session. A fresh session should be productive within 30 seconds of reading STATUS.md.
 
 ---
 
@@ -155,8 +159,10 @@ Self-hosted on Vincent's Mac mini:
 
 ## Key References
 
+- **`STATUS.md`** — **READ FIRST.** Current state, next steps, recent history
 - `specs/` — Feature specifications
 - `docs/PRINCIPLES.md` — Building principles
 - `Ideation/BACKLOG.md` — Ideas parking lot
 - `ROADMAP.md` — Delivery roadmap
-- `code/claudegram/` — Reference implementation for bot architecture
+- `docs/incidents/` — Incident history
+- `~/code/claudegram/` — Reference implementation for bot architecture
