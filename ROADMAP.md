@@ -4,13 +4,13 @@
 
 ---
 
-## Phase 1: Foundation + Social Circle (Current)
+## Phase 1: Foundation + Social Circle (In Progress)
 
 The minimum viable Jarvis: know our friends, remind us about important dates, help us be thoughtful.
 
 ### SPEC-001: Social Circle — Friends & Events Tracker
 
-**Status:** In Review (awaiting Vincent's approval)
+**Status:** In Progress (Steps 0-5 complete, Steps 6-9 remain)
 
 **What it includes:**
 - Contact management (friends, family, their kids)
@@ -21,35 +21,84 @@ The minimum viable Jarvis: know our friends, remind us about important dates, he
 - User identity tracking (who added what)
 - Shared/personal visibility per contact
 
-**Implementation phases (after spec approval):**
-1. Backend + Data Model — PostgreSQL, FastAPI CRUD, tests
-2. Telegram Bot — Claudegram fork, user identity, natural language
-3. Proactive Engine — Daily cron, SentReminder dedup, heartbeat
-4. Seed & Go Live — Add contacts, monitor, iterate
+**Completed:**
+- Backend scaffold (FastAPI, PostgreSQL, Alembic)
+- 6 data models with constraints and indexes
+- 8 CRUD route files, 7 Pydantic schema files
+- Proactive engine (reminder engine, message builder, Telegram sender, heartbeat)
+- Test suite: 47 tests, all passing
+
+**Remaining:**
+- Step 6: Bot scaffold (Claudegram fork)
+- Step 7: User identity (CURRENT_USER injection)
+- Step 8: Deployment (launchd plists)
+- Step 9: Go live (seed contacts, monitor)
 
 ### Framework (Done)
 - CLAUDE.md hierarchy with architecture, rules, user identity
-- 18 skills across 4 categories (dev, operational, meta)
-- Spec template, 3-way review process
+- 19 skills across 4 categories (dev, operational, meta, scheduled)
+- Spec template, multi-agent review process
 - Incident tracking system
 - Christianne-first UX principle
 - STATUS.md for session continuity
 
 ---
 
-## Phase 2: Household Modules (Future — not yet scoped)
+## Phase 2: Morning Briefing (Spec Approved)
 
-Potential modules to add once Phase 1 is stable:
+Daily proactive information delivery for the commute.
 
-- Household tasks & chores
+### SPEC-002: Morning Briefing — Weather + Bikes + Clothing
+
+**Status:** Approved (implementation plan in progress)
+
+**What it includes:**
+- Daily 07:00 CT message with weather forecast (Open-Meteo)
+- Clothing suggestion optimized for biking
+- Live Divvy bike/ebike/scooter availability at home station
+- Dock availability at office stations (Optiver for Vincent, Adyen for Christianne)
+- Biking recommendation (weather + bike availability combined)
+- On-demand checks ("are there bikes?")
+- Per-user personalization
+- Partial failure handling (weather or Divvy down → send what we have)
+- Cross-module: includes Social Circle events for the day
+
+---
+
+## Phase 3: Task Reminders (Research Complete)
+
+Shared household task management — the "we need to do X by Y" system.
+
+### SPEC-003: Task Reminders — Household Tasks & Recurring Reminders
+
+**Status:** Research complete, spec in progress
+
+**What it includes:**
+- Task CRUD with natural language creation
+- Lifecycle: pending → done / cancelled / snoozed
+- Recurring tasks (daily, weekly, monthly, quarterly, yearly) with auto-creation on completion
+- Assignment (vincent, christianne, or both)
+- Due dates with automatic reminders
+- Overdue nudges (daily → weekly → final warning)
+- Contact linking (task related to a Social Circle person)
+- Morning Briefing integration (today's tasks section)
+- Search integration
+
+---
+
+## Future Modules (Not Yet Scoped)
+
+Potential modules once Phases 1-3 are stable:
+
 - Grocery/shopping lists
 - Meal planning
 - Travel planning
-- Bill reminders & household finance
+- Household finance / bill tracking
 - Health check-ups & appointments
 - Gift ideas tracker (ties into Social Circle)
 - Seasonal reminders (winter tires, tax deadlines, garden)
 - Relationship decay detection ("haven't seen X in 3 months")
+- Calendar sync (export events/tasks to Google/Apple Calendar)
 
 > These are ideas, not commitments. Each requires ideation + spec before building via the `add-module` skill.
 

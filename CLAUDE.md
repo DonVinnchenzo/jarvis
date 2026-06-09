@@ -17,7 +17,7 @@ A personal household assistant that proactively helps Vincent & Christianne stay
 - **Bot**: TypeScript Telegram bot (Grammy + Claude Agent SDK), forked from Claudegram. Each user message goes through a Claude Code session pointed at THIS project directory. Claude reads these skills, CLAUDE.md files, and the codebase to reason about requests.
 - **Backend**: Python FastAPI API on localhost:8000 — single source of truth for all data. Only the bot (same machine) calls it. Authenticated via `X-API-Key` header.
 - **Database**: PostgreSQL (Homebrew, localhost). All household data.
-- **Proactive engine**: Daily cron at 08:00 Europe/Amsterdam. Deterministic — no AI needed. Checks dates, sends Telegram reminders.
+- **Proactive engine**: Multiple cron jobs via launchd. Social Circle reminders at 08:00 Europe/Amsterdam. Morning Briefing at 07:00 America/Chicago. Deterministic — no AI needed. Each module has its own trigger endpoint.
 - **Hosting**: Self-hosted on Vincent's Mac mini. Backend bound to 127.0.0.1. Bot connects to Telegram API. PostgreSQL local.
 
 ### How Claude Code fits in
@@ -153,7 +153,7 @@ Self-hosted on Vincent's Mac mini:
 - FastAPI backend: `127.0.0.1:8000` (systemd/launchd managed)
 - Telegram bot: Grammy process (launchd managed, same as Claudegram)
 - PostgreSQL: Homebrew, local socket
-- Cron: launchd plist for 08:00 daily reminder run
+- Cron: launchd plists — Social Circle reminders (08:00 Amsterdam), Morning Briefing (07:00 CT), Task Reminders (same cron as briefing)
 
 ---
 
