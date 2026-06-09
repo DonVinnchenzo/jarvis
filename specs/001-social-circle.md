@@ -60,21 +60,37 @@ This is the first Jarvis module. It establishes the patterns for data modeling, 
 ### Constraints
 
 - Single household, two Telegram users. No multi-tenant concerns.
-- Personal data about real people — self-hosted, no third-party analytics or data sharing.
-- Bot is a thin input/display layer. All logic and data live in the backend (FastAPI + PostgreSQL).
+- Personal data about real people — self-hosted on Mac mini, no third-party analytics.
+- The bot IS a Claude Code agent (forked from Claudegram). Natural language input, not rigid commands.
+- Backend (FastAPI) runs on localhost:8000, only the bot calls it.
+- Claude calls the API via Bash (curl). Never direct SQL.
+
+### User Identity
+
+The bot identifies each user by Telegram user ID and passes it to the Claude Code session:
+- System prompt includes: `CURRENT_USER: Vincent (Telegram ID: <id>)` or `CURRENT_USER: Christianne (Telegram ID: <id>)`
+- All data mutations record `created_by` with the Telegram user ID
+- Contact data is shared by default (both users see it)
+- `visibility` field on Contact supports "shared" (default) or "personal" for future use
+- Notes show attribution: "Added by Christianne, 3 weeks ago"
 
 ### Patterns to Follow
 
-- Grammy for the Telegram bot (TypeScript), same as Claudegram.
-- FastAPI for the backend API (Python), same pattern as ClaryBook.
-- Conventional Commits for all changes.
+- Grammy + Claude Agent SDK for the bot (TypeScript), forked from Claudegram architecture
+- Claude Code session with `cwd` set to the jarvis project directory — skills and CLAUDE.md loaded automatically via `settingSources: ['project', 'user']`
+- FastAPI for the backend API (Python)
+- Conventional Commits for all changes
+- Every operation has a matching skill in `.claude/skills/` — Claude follows skills, doesn't improvise
 
 ### Implementation Hints
 
-- Use APScheduler or a simple cron trigger (e.g., systemd timer, Railway cron) for the daily reminder job. Keep it simple — a single daily run at 08:00 CET is sufficient.
-- The proactive engine should be a standalone script/endpoint that the cron calls, not embedded in the bot process. This keeps the bot stateless and the engine testable.
-- For the `/add` command, use Grammy's conversation plugin for multi-step interactive flows (ask name, then relationship, then birthday, etc.).
-- Store Telegram user IDs in an environment variable or config table for the whitelist. Don't hardcode.
+- Fork Claudegram's bot scaffolding. Key files to adapt: `agent.ts` (system prompt, working directory), `config.ts` (env vars), `bot.ts` (command registration)
+- The system prompt appended to `claude_code` preset must include user identity and Jarvis-specific instructions
+- Use `launchd` plist for the daily 08:00 reminder cron (not embedded in bot process)
+- The proactive engine is a standalone POST endpoint (`/api/reminders/run`) — testable independently
+- Users interact naturally ("add my friend Mark, birthday June 14") — Claude parses intent and calls the API
+- Explicit `/add`, `/upcoming` etc. commands are optional shortcuts, not the primary interface
+- Store Telegram user IDs in env var `ALLOWED_USER_IDS` and a name mapping in `USER_NAMES` (e.g., `{"12345":"Vincent","67890":"Christianne"}`)
 
 ---
 
@@ -125,7 +141,10 @@ This is the first Jarvis module. It establishes the patterns for data modeling, 
    **A:** No. `/add` covers name + relationship + birthday. Anniversaries and children added separately via follow-up commands. Keep the flow short and simple.
 
 4. **Q:** Deployment target — Railway or self-hosted on Mac mini?
-   **A:** TBD — either works. Railway is simpler for cron jobs; Mac mini keeps data fully local. If self-hosted, bind FastAPI to 127.0.0.1.
+   **A:** Self-hosted on Mac mini. Keeps data fully local, zero cost, infra already proven (Claudegram runs there). FastAPI bound to 127.0.0.1. Bot + backend managed via launchd.
+
+5. **Q:** Claude Code agent or direct API calls for the bot?
+   **A:** Claude Code agent (Max subscription, flat rate). Bot is a fork of Claudegram — same Grammy + Claude Agent SDK pattern. Users interact naturally; Claude interprets intent and calls the backend API. This also lets users improve the system itself through conversation.
 
 ---
 
@@ -224,6 +243,7 @@ Contact
   - id: UUID (PK)
   - name: string (required, max 200 chars)
   - relationship_type: string (required — "friend", "family", "colleague", or custom)
+  - visibility: enum ("shared", "personal") — default "shared"
   - created_by: string (Telegram user ID of whoever created it)
   - created_at: timestamp
   - updated_at: timestamp
@@ -381,10 +401,10 @@ Day-of:
 
 ## Rollout Plan
 
-1. **Phase 1: Backend + Data Model** — Set up PostgreSQL schema, implement FastAPI CRUD endpoints, write unit and integration tests.
-2. **Phase 2: Telegram Bot Commands** — Scaffold Grammy bot, implement `/add`, `/contacts`, `/upcoming`, `/notes`, `/addnote`, `/search`, `/settings`. Wire to backend API.
-3. **Phase 3: Proactive Engine** — Implement the cron-based reminder engine, SentReminder dedup logic, Telegram sends. Test extensively with edge cases.
-4. **Phase 4: Seed & Go Live** — Vincent and Christianne add their contacts. Monitor for a week. Fix any issues.
+1. **Phase 1: Backend + Data Model** — Install PostgreSQL via Homebrew, create schema, implement FastAPI CRUD endpoints + search + upcoming, write unit and integration tests. Run on localhost:8000.
+2. **Phase 2: Telegram Bot (Claudegram fork)** — Fork Claudegram bot code into `bot/`. Adapt system prompt to include Jarvis instructions + user identity. Point `cwd` at this project directory. Register with BotFather. Test natural language interactions against the backend API.
+3. **Phase 3: Proactive Engine** — Implement the cron-based reminder engine endpoint (`/api/reminders/run`), SentReminder dedup, Telegram sends with note context. Create launchd plist for 08:00 daily trigger. Test edge cases.
+4. **Phase 4: Seed & Go Live** — Vincent and Christianne add their contacts via natural conversation. Monitor for a week. Fix issues. Run `/post-incident` for anything that goes wrong.
 
 ---
 
@@ -412,3 +432,10 @@ Day-of:
   - Simplified v1: global reminder config only, all users always notified
   - Added DB-level CHECK constraints on day/month
   - Added GDPR household exemption note
+- 2026-06-09 — Claude Code — Architecture decisions:
+  - Self-hosted on Mac mini (resolved Q4)
+  - Claude Code agent via Claudegram fork (resolved Q5)
+  - User identity passed via system prompt (CURRENT_USER)
+  - Added visibility field (shared/personal) to Contact
+  - Natural language as primary interface, slash commands as shortcuts
+  - Skills framework for all operations (add-contact, search, add-note, upcoming, manage-reminders, add-module)
