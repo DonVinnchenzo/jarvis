@@ -2,7 +2,7 @@ from fastapi import FastAPI, Request
 from fastapi.responses import JSONResponse
 
 from src.config import get_settings
-from src.routes import children, contacts, events, health, notes, reminders, search, upcoming
+from src.routes import briefing, children, contacts, events, health, notes, reminders, search, upcoming
 
 app = FastAPI(title="Jarvis API", version="0.1.0")
 
@@ -39,6 +39,7 @@ app.include_router(notes.router, prefix="/api", tags=["notes"])
 app.include_router(upcoming.router, prefix="/api", tags=["upcoming"])
 app.include_router(search.router, prefix="/api", tags=["search"])
 app.include_router(reminders.router, prefix="/api", tags=["reminders"])
+app.include_router(briefing.router, prefix="/api", tags=["briefing"])
 
 
 if __name__ == "__main__":
