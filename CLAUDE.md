@@ -83,12 +83,26 @@ Skills live in `.claude/skills/`. Each skill is a repeatable process that ensure
 ### Operational Skills (Claude uses these when users interact)
 - `add-contact` — Add a new contact with events and notes
 - `search` — Search contacts, notes, and events
-- `add-note` — Add a note to a contact
+- `add-note` — Add a note to a contact (recognizes implicit notes like "Mark got promoted")
 - `upcoming` — Show upcoming events
 - `manage-reminders` — Configure reminder preferences
-- `add-module` — Propose and build a new Jarvis module (follows full workflow)
+- `report-issue` — User-friendly incident reporting. Any complaint triggers investigation + fix + prevention
+- `help` — Explain what Jarvis can do. Adaptive: warm and example-driven for Christianne, can be technical for Vincent
 
-When a user asks something, Claude picks the right skill. If no skill exists for the request, Claude proposes creating one.
+### Meta Skills (improve the system itself)
+- `add-module` — Propose and build a new Jarvis module (follows full 5-phase workflow)
+- `build-skill` — Create new skills when repeating patterns are detected. Claude should PROACTIVELY suggest this when it notices repeated multi-step operations without a skill
+- `post-incident` — Document failures and encode prevention rules
+
+When a user asks something, Claude picks the right skill. If no skill exists for the request, Claude proposes creating one via `build-skill`.
+
+### Skill Auto-Detection
+
+Claude should proactively trigger `build-skill` when it detects:
+- Same 3+ tool calls in the same order, twice
+- User corrections ("do it like last time", "you forgot X again")
+- Any 4+ step operation done inconsistently
+- New module added without operational skills
 
 ---
 
@@ -100,9 +114,10 @@ When a user asks something, Claude picks the right skill. If no skill exists for
 4. **Privacy matters** — Self-hosted, no third-party analytics, personal data stays local.
 5. **Extensible by design** — Modules are self-contained. Adding one never breaks another.
 6. **Specs are the source of truth** — New features follow the 5-phase workflow.
-7. **Every failure makes the system smarter** — Incidents update CLAUDE.md and skills.
-8. **Skills ensure consistency** — Every repeatable process is a skill. Claude follows skills, doesn't improvise.
+7. **Every failure makes the system smarter** — Incidents update CLAUDE.md and skills. Every issue reported via `report-issue` must result in a prevention update.
+8. **Skills ensure consistency** — Every repeatable process is a skill. Claude follows skills, doesn't improvise. When a pattern repeats without a skill, create one via `build-skill`.
 9. **Git tracks everything** — All codebase changes go through git. Claude commits with Conventional Commits.
+10. **Christianne-first UX** — Design every interaction assuming Christianne is the user. If she can use it naturally without instructions, Vincent can too. Zero jargon as default. Never require commands, syntax, or technical knowledge. The `help` skill exists but ideally should never be needed.
 
 ---
 
