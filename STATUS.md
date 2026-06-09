@@ -6,70 +6,61 @@
 
 ## Current Phase
 
-**Phase 1: Social Circle** — Steps 0-5 done, Steps 6-9 remain
-**Phase 2: Morning Briefing** — Spec approved, implementation plan written, ready to build
-**Phase 3: Task Reminders** — Spec approved, needs implementation plan before build
+**Phase 1: Social Circle** — Backend done (Steps 0-5), bot scaffold done (Step 6-7), deployment remaining (Step 8-9)
+**Phase 2: Morning Briefing** — Backend built and smoke-tested, needs tests + cron plist
+**Phase 3: Task Reminders** — Spec approved, needs implementation plan + build
 
 ## What to do next
 
-1. **Social Circle Step 6: Bot scaffold** — Fork Claudegram into `bot/`. This needs the Telegram bot token from Vincent (created via @BotFather). See implementation plan Step 6.
-2. **Social Circle Step 7: User identity** — Dynamic CURRENT_USER injection.
-3. **Social Circle Step 8: Deployment** — launchd plists.
-4. **Social Circle Step 9: Go live** — Seed contacts, monitor.
-5. **Morning Briefing: Build** — Follow `Ideation/MORNING-BRIEFING-IMPLEMENTATION-PLAN.md`. Can be built in parallel with Social Circle Steps 7-9.
-6. **Task Reminders: Implementation plan** — Run `implementation-plan` skill against SPEC-003 before building.
-7. **Task Reminders: Build** — After plan is written.
+1. **Deploy: launchd plists** — Create plists for backend, bot, and cron. See implementation plan Step 8.
+2. **Start the bot for real** — `cd bot && npm run dev` to test with Vincent's Telegram. Verify /start, natural language, add-contact flow.
+3. **Seed Social Circle data** — Add Vincent & Christianne's actual friends/family via the bot.
+4. **Morning Briefing tests** — Write unit tests for clothing, recommendation, message builder; integration tests with mocked APIs.
+5. **Morning Briefing cron** — launchd plist for 07:00 CT daily trigger.
+6. **Task Reminders** — Implementation plan, then build (models, migration, routes, engine, skills).
+7. **Christianne's Telegram ID** — Need it for ALLOWED_USER_IDS + USER_NAMES in .env.
 
-## Blocking on Vincent
+## .env Status
 
-- **Telegram bot token** — Vincent needs to create a bot via @BotFather and provide the token. This blocks Steps 6-9 (bot scaffold, deployment, go-live).
+- `TELEGRAM_BOT_TOKEN` — Set (WestHillJarvisBot)
+- `JARVIS_API_KEY` — Set (generated)
+- `ALLOWED_USER_IDS` — 7626520356 (Vincent only, Christianne pending)
+- `USER_NAMES` — {"7626520356":"Vincent"} (Christianne pending)
+- `DATABASE_URL` — Set (local PostgreSQL)
 
 ## Completed
 
 ### Social Circle (SPEC-001)
-- Steps 0-4: Backend fully built (FastAPI, PostgreSQL, 6 models, 8 routes, proactive engine)
-- Step 5: Test suite — 47 tests, all passing (contacts, events, upcoming, search, reminder engine)
+- Steps 0-5: Backend fully built + tested (47 tests passing)
+- Steps 6-7: Bot scaffold built (Grammy + Claude Agent SDK, user identity injection)
 
 ### Morning Briefing (SPEC-002)
-- Ideation research done
-- Spec written, reviewed, approved
-- Implementation plan written (9 steps)
+- Backend module built: weather fetcher, Divvy fetcher, clothing logic, biking recommendation, per-user message builder, briefing engine, 4 API endpoints
+- Smoke tested: live weather (85°F Chicago), live Divvy data, full personalized briefing working
 
 ### Task Reminders (SPEC-003)
-- Ideation research done (comprehensive — data model, recurrence, interactions, integrations)
-- Spec written, reviewed, approved
+- Research complete, spec approved
 
 ### Framework
 - 19 skills, CLAUDE.md hierarchy, STATUS.md continuity, git workflow
 
-## Key decisions
-
-- Hosting: Self-hosted on Mac mini (localhost only)
-- Bot: Claude Code agent via Claudegram fork (Grammy + Claude Agent SDK)
-- AI cost: Claude Code Max subscription (flat rate)
-- Database: postgresql+asyncpg://vincent@localhost/jarvis
-- Social Circle timezone: Europe/Amsterdam
-- Morning Briefing timezone: America/Chicago (07:00 CT)
-- Task Reminders timezone: America/Chicago (same as Morning Briefing)
-- APIs: Open-Meteo (weather, free), Divvy GBFS (bikes, free)
-- Task recurrence: simple pattern strings (daily, weekly:monday, monthly:1, yearly:09-01)
-
 ## Key files
 
-- `specs/001-social-circle.md` — Approved
-- `specs/002-morning-briefing.md` — Approved
-- `specs/003-task-reminders.md` — Approved
-- `Ideation/SOCIAL-CIRCLE-IMPLEMENTATION-PLAN.md` — Steps 5 done, 6-9 remain
-- `Ideation/MORNING-BRIEFING-IMPLEMENTATION-PLAN.md` — Ready to execute
-- `Ideation/TASK-REMINDERS-RESEARCH.md` — Research complete
-- `backend/src/` — All Social Circle backend code
+- `backend/src/briefing/` — Morning Briefing module (8 files)
+- `backend/src/routes/briefing.py` — 4 briefing endpoints
+- `bot/src/` — Telegram bot scaffold (12 files)
+- `bot/src/claude/agent.ts` — Claude Agent SDK integration with CURRENT_USER injection
+- `.env` — Bot token, API key, user IDs configured
 
 ## Recent history
 
 - 2026-06-09: Created repo, framework, 19 skills
-- 2026-06-09: SPEC-001 approved, implementation plan, Steps 0-5 built
+- 2026-06-09: SPEC-001 approved, Steps 0-5 built (backend + tests)
 - 2026-06-09: SPEC-002 approved, implementation plan written
-- 2026-06-09: SPEC-003 ideation researched, spec approved
+- 2026-06-09: SPEC-003 approved
+- 2026-06-09: Bot token received (WestHillJarvisBot), .env configured
+- 2026-06-09: Bot scaffold built (Steps 6-7), Morning Briefing backend built
+- 2026-06-09: Smoke tested: weather, Divvy bikes, full briefing — all working with live data
 
 ---
 
