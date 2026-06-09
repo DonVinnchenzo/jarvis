@@ -12,25 +12,38 @@ This file is the single source of truth for where the project stands. It is upda
 
 ## Current Step
 
-**Implementation plan written → Next: Vincent approves plan, then start building (Step 0: Prerequisites)**
+**Building: Steps 3-4 in progress (CRUD routes + proactive engine)**
 
-SPEC-001 is approved. The implementation plan is written with 9 detailed steps. Awaiting Vincent's go-ahead to start building.
+Steps 0-2 are complete. Steps 3-4 are being built by a sub-agent. When they finish, proceed to Step 5 (tests).
+
+## Completed Steps
+
+- **Step 0: Prerequisites** — DONE. PostgreSQL 16 installed (Homebrew), `jarvis` database created, Python 3.12 venv set up.
+- **Step 1: Backend scaffold** — DONE. FastAPI app with API key middleware, Pydantic settings, SQLAlchemy async engine, Alembic setup. Verified: health returns OK, wrong API key returns 401.
+- **Step 2: Models + migration** — DONE. 6 models (Contact, ContactEvent, ContactChild, ContactNote, ReminderConfig, SentReminder). First Alembic migration applied. 3 default ReminderConfig rows seeded (7, 1, 0 days). CHECK constraints and UNIQUE constraint verified.
+- **Steps 3-4: CRUD routes + engine** — IN PROGRESS. Sub-agent building schemas, routes, proactive engine.
 
 ## What to do next
 
-1. **Get Vincent's approval on the implementation plan** — He's seen the summary. If he says go, start at Step 0.
-2. **Step 0: Prerequisites** — Install PostgreSQL via Homebrew, create `jarvis` database, create bot via BotFather, set up `.env`, Python venv, Node.js deps. See `Ideation/SOCIAL-CIRCLE-IMPLEMENTATION-PLAN.md` for full details.
-3. **Step 1: Backend scaffold** — FastAPI app, config, database engine, Alembic setup. 9 files.
-4. **Step 2: Database models + migration** — 6 SQLAlchemy models, first Alembic migration, seed 3 default reminder configs.
-5. **Step 3: CRUD routes** — 8 route files + 7 schema files. Contacts, events, children, notes, upcoming, search, reminders, health.
-6. **Step 4: Proactive engine** — reminder_engine.py, message_builder.py, telegram_sender.py, heartbeat.
-7. **Step 5: Tests** — 5 test files, 40+ cases. Critical: year-boundary, Feb 29, idempotency, note surfacing.
-8. **Step 6: Bot scaffold** — Fork Claudegram into bot/, strip unnecessary features, wire to Jarvis project.
-9. **Step 7: User identity** — Dynamic system prompt with CURRENT_USER injection per message.
-10. **Step 8: Deployment** — 3 launchd plists (backend, bot, cron), install script.
-11. **Step 9: Go live** — Seed contacts via conversation, monitor, iterate.
+1. **If Steps 3-4 just completed** — Verify by running:
+   ```bash
+   cd /Users/vincent/jarvis/backend && source .venv/bin/activate && ruff check .
+   ```
+   Then start the server and smoke test CRUD endpoints. See implementation plan Step 3 "What to test" section.
+2. **Step 5: Tests** — Write test suite (5 files, 40+ cases). See implementation plan.
+3. **Step 6: Bot scaffold** — Fork Claudegram into bot/. Can run in parallel with Step 5.
+4. **Step 7: User identity** — Dynamic CURRENT_USER injection.
+5. **Step 8: Deployment** — launchd plists.
+6. **Step 9: Go live** — Seed contacts, monitor.
 
-> Note: Steps 1-5 (backend) and Step 6 (bot) can run in parallel — no dependency between them.
+## Key files for current work
+
+- `backend/src/main.py` — FastAPI app entry point
+- `backend/src/models/` — All 6 SQLAlchemy models
+- `backend/src/routes/` — Route files (being created)
+- `backend/src/schemas/` — Pydantic schemas (being created)
+- `backend/src/engine/` — Proactive engine (being created)
+- `Ideation/SOCIAL-CIRCLE-IMPLEMENTATION-PLAN.md` — Full build plan
 
 ## Key decisions already made
 
@@ -44,26 +57,18 @@ SPEC-001 is approved. The implementation plan is written with 9 detailed steps. 
 - **Timezone**: Europe/Amsterdam
 - **Natural language first**: Slash commands are optional shortcuts, not primary interface
 - **Spec approved**: SPEC-001 approved 2026-06-09
-
-## Key files to read for context
-
-- `CLAUDE.md` — Architecture, skills framework, rules
-- `specs/001-social-circle.md` — The approved spec
-- `Ideation/SOCIAL-CIRCLE-IMPLEMENTATION-PLAN.md` — **THE BUILD PLAN (step-by-step)**
-- `Ideation/SOCIAL-CIRCLE-SPEC-REVIEW.md` — Review findings and resolutions
-- `ROADMAP.md` — What's planned beyond Phase 1
-- `docs/PRINCIPLES.md` — Building principles
+- **Database URL**: postgresql+asyncpg://vincent@localhost/jarvis
+- **API key**: Stored in .env as JARVIS_API_KEY
 
 ## Recent history
 
 - 2026-06-09: Created GitHub repo (github.com/DonVinnchenzo/jarvis)
-- 2026-06-09: Set up ClaryBook-style framework (CLAUDE.md, 11 principles, spec template)
-- 2026-06-09: Wrote SPEC-001, ran 3-way parallel review, resolved all blockers
-- 2026-06-09: Architecture decisions: self-hosted Mac mini, Claudegram fork, Claude Code agent
-- 2026-06-09: Created 19 skills (9 dev, 7 operational, 4 meta) including build-skill, report-issue, help, session-handoff
-- 2026-06-09: Added session continuity system (STATUS.md + session-handoff skill)
-- 2026-06-09: SPEC-001 approved by Vincent
-- 2026-06-09: Implementation plan written (9 steps, 60+ files mapped)
+- 2026-06-09: Set up ClaryBook-style framework, 19 skills, session continuity
+- 2026-06-09: SPEC-001 written, reviewed (3-way), approved
+- 2026-06-09: Implementation plan written (9 steps, 60+ files)
+- 2026-06-09: Step 0 complete — PostgreSQL 16 installed, jarvis DB created
+- 2026-06-09: Steps 1-2 complete — Backend scaffold, models, migration, seeded reminders
+- 2026-06-09: Steps 3-4 in progress — CRUD routes and proactive engine being built
 
 ---
 
