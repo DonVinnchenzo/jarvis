@@ -20,22 +20,22 @@ class WeatherData:
     """Structured weather data for the morning briefing."""
 
     # Current conditions
-    temperature: float          # Fahrenheit
-    feels_like: float           # Fahrenheit
-    precipitation: float        # inches
-    wind_speed: float           # mph
-    wind_gusts: float           # mph
+    temperature: float          # Celsius
+    feels_like: float           # Celsius
+    precipitation: float        # mm
+    wind_speed: float           # km/h
+    wind_gusts: float           # km/h
     humidity: int               # percent
     weather_code: int           # WMO code
     weather_description: str    # Human-readable from WMO code
 
     # Daily forecast
-    high: float                 # Fahrenheit
-    low: float                  # Fahrenheit
-    feels_like_high: float      # Fahrenheit
-    feels_like_low: float       # Fahrenheit
+    high: float                 # Celsius
+    low: float                  # Celsius
+    feels_like_high: float      # Celsius
+    feels_like_low: float       # Celsius
     precip_probability: int     # percent (0-100)
-    daily_max_wind: float       # mph
+    daily_max_wind: float       # km/h
     daily_weather_code: int     # WMO code
 
 

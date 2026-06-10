@@ -2,6 +2,7 @@
 
 Station IDs sourced from Divvy GBFS station_information.json.
 Coordinates for 228 W Hill St, Chicago, IL 60610.
+Units are metric (Celsius, km/h, mm) -- Vincent & Christianne use metric.
 """
 
 # --- Timezone ---
@@ -34,9 +35,9 @@ WEATHER_PARAMS = {
         "wind_speed_10m_max",
         "weather_code",
     ]),
-    "temperature_unit": "fahrenheit",
-    "wind_speed_unit": "mph",
-    "precipitation_unit": "inch",
+    "temperature_unit": "celsius",
+    "wind_speed_unit": "kmh",
+    "precipitation_unit": "mm",
     "timezone": BRIEFING_TIMEZONE,
     "forecast_days": 1,
 }
@@ -49,8 +50,8 @@ FREE_BIKE_STATUS_URL = f"{GBFS_BASE_URL}/free_bike_status.json"
 # --- Station IDs ---
 STATIONS = {
     "home": {
-        "primary": "a3a40088-a135-11e9-9cda-0a87ae2ba916",   # Franklin & Chicago
-        "backup": "a3b35e21-a135-11e9-9cda-0a87ae2ba916",    # Orleans & Chestnut
+        "primary": "a3a40088-a135-11e9-9cda-0a87ae2ba916",   # Franklin & Chicago (15m from home)
+        "backup": "90011328-f7bd-4b7b-8f95-8204a0b50f27",    # Wells St & Institute Pl (117m from home)
     },
     "optiver": {
         "dropoff": "2178904806732191280",   # Riverside Plaza & Adams
@@ -62,7 +63,7 @@ STATIONS = {
 
 STATION_NAMES = {
     "a3a40088-a135-11e9-9cda-0a87ae2ba916": "Franklin & Chicago",
-    "a3b35e21-a135-11e9-9cda-0a87ae2ba916": "Orleans & Chestnut",
+    "90011328-f7bd-4b7b-8f95-8204a0b50f27": "Wells & Institute",
     "2178904806732191280": "Riverside Plaza & Adams",
     "2161159315996441640": "Kingsbury & Kinzie 2",
 }
@@ -75,21 +76,21 @@ OFFICE_BY_NAME = {
     "Christianne": {"key": "adyen", "station_id": "2161159315996441640", "label": "Adyen"},
 }
 
-# --- Clothing thresholds (feels-like temperature, Fahrenheit) ---
+# --- Clothing thresholds (feels-like temperature, Celsius) ---
 CLOTHING_THRESHOLDS = [
-    (80, "Light and breathable \u2014 shorts and t-shirt. Stay hydrated."),
-    (60, "Perfect biking weather \u2014 light layers."),
-    (40, "Bring a jacket. Consider gloves for the wind."),
-    (25, "Bundle up \u2014 warm jacket, gloves, hat. Cover your ears."),
+    (27, "Light and breathable \u2014 shorts and t-shirt. Stay hydrated."),
+    (16, "Perfect biking weather \u2014 light layers."),
+    (4, "Bring a jacket. Consider gloves for the wind."),
+    (-4, "Bundle up \u2014 warm jacket, gloves, hat. Cover your ears."),
 ]
 CLOTHING_BRUTAL = "It's brutal out there. Full winter gear or consider transit."
 CLOTHING_RAIN = "Rain expected \u2014 bring a rain jacket and fenders help."
 CLOTHING_WIND = "Windy \u2014 expect resistance on the ride."
 
 # --- Biking recommendation thresholds ---
-BIKE_MIN_FEELS_LIKE = 25   # Fahrenheit
-BIKE_MAX_FEELS_LIKE = 100  # Fahrenheit
-BIKE_MAX_WIND_SPEED = 20   # mph
+BIKE_MIN_FEELS_LIKE = -4   # Celsius
+BIKE_MAX_FEELS_LIKE = 38   # Celsius
+BIKE_MAX_WIND_SPEED = 32   # km/h
 
 # --- HTTP timeout ---
 API_TIMEOUT_SECONDS = 10

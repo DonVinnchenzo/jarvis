@@ -48,13 +48,13 @@ def _format_weather_section(weather: WeatherData) -> str:
     """Format the weather section of the briefing."""
     description = weather.weather_description
     emoji_line = (
-        f"\U0001f321 Weather: {weather.temperature:.0f}\u00b0F "
-        f"(feels like {weather.feels_like:.0f}\u00b0F)"
+        f"\U0001f321 Weather: {weather.temperature:.0f}\u00b0C "
+        f"(feels like {weather.feels_like:.0f}\u00b0C)"
     )
-    range_line = f"\u2191 High {weather.high:.0f}\u00b0F / \u2193 Low {weather.low:.0f}\u00b0F"
+    range_line = f"\u2191 High {weather.high:.0f}\u00b0C / \u2193 Low {weather.low:.0f}\u00b0C"
     detail_line = (
         f"{description} \u2022 {weather.precip_probability}% chance of rain "
-        f"\u2022 Wind {weather.wind_speed:.0f} mph"
+        f"\u2022 Wind {weather.wind_speed:.0f} km/h"
     )
     return f"{emoji_line}\n{range_line}\n{detail_line}"
 

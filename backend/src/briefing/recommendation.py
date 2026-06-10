@@ -40,13 +40,13 @@ def get_bike_recommendation(
 
         # Temperature check
         if weather.feels_like < BIKE_MIN_FEELS_LIKE:
-            reasons_no.append(f"feels like {weather.feels_like:.0f}\u00b0F \u2014 dangerously cold")
+            reasons_no.append(f"feels like {weather.feels_like:.0f}\u00b0C \u2014 dangerously cold")
         elif weather.feels_like > BIKE_MAX_FEELS_LIKE:
-            reasons_no.append(f"feels like {weather.feels_like:.0f}\u00b0F \u2014 dangerously hot")
+            reasons_no.append(f"feels like {weather.feels_like:.0f}\u00b0C \u2014 dangerously hot")
 
         # Wind check
         if weather.wind_speed >= BIKE_MAX_WIND_SPEED:
-            reasons_no.append(f"wind at {weather.wind_speed:.0f} mph")
+            reasons_no.append(f"wind at {weather.wind_speed:.0f} km/h")
 
     # --- Bike availability checks ---
     if divvy is not None and divvy.home_primary is not None:
