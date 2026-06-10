@@ -8,6 +8,7 @@ from src.briefing.clothing import get_clothing_suggestion
 from src.briefing.constants import (
     BRIEFING_TIMEZONE,
     OFFICE_BY_NAME,
+    PRECIPITATION_WEATHER_CODES,
     STATION_NAMES,
     STATIONS,
 )
@@ -47,6 +48,14 @@ def _greeting_emoji(weather: WeatherData | None) -> str:
 def _format_weather_section(weather: WeatherData) -> str:
     """Format the weather section of the briefing."""
     description = weather.weather_description
+
+    # If the daily forecast indicates precipitation but right now is clear,
+    # surface the daily forecast \u2014 readers decide the whole day from this line.
+    daily_is_precip = weather.daily_weather_code in PRECIPITATION_WEATHER_CODES
+    current_is_precip = weather.weather_code in PRECIPITATION_WEATHER_CODES
+    if daily_is_precip and not current_is_precip:
+        description = f"{description}, {weather.daily_weather_description.lower()} forecast"
+
     emoji_line = (
         f"\U0001f321 Weather: {weather.temperature:.0f}\u00b0C "
         f"(feels like {weather.feels_like:.0f}\u00b0C)"

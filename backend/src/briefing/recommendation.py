@@ -26,15 +26,20 @@ def get_bike_recommendation(
 
     # --- Weather checks ---
     if weather is not None:
-        # Rain check
-        is_raining = (
+        # Rain / storm check — consider both current and daily forecast.
+        # A morning briefing decides the whole day, so a thunderstorm forecast
+        # later today must block the recommendation even when it's clear now.
+        current_precip = (
             weather.precipitation > 0
             or weather.weather_code in PRECIPITATION_WEATHER_CODES
         )
+        daily_precip = weather.daily_weather_code in PRECIPITATION_WEATHER_CODES
         rain_likely = weather.precip_probability > 60
 
-        if is_raining:
+        if current_precip:
             reasons_no.append("rain expected all morning")
+        elif daily_precip:
+            reasons_no.append(f"{weather.daily_weather_description.lower()} forecast today")
         elif rain_likely:
             reasons_no.append(f"{weather.precip_probability}% chance of rain")
 

@@ -26,11 +26,15 @@ def get_clothing_suggestion(weather: WeatherData) -> str:
 
     parts = [base]
 
-    # Rain modifier: current precipitation OR high probability OR rain weather code
+    # Rain modifier: current precipitation, high probability, or rain code in
+    # either current or daily forecast. The morning briefing dresses you for
+    # the whole day, not just the moment.
+    rain_codes = {51, 53, 55, 56, 57, 61, 63, 65, 66, 67, 80, 81, 82, 95, 96, 99}
     has_rain = (
         weather.precipitation > 0
         or weather.precip_probability > 60
-        or weather.weather_code in {51, 53, 55, 56, 57, 61, 63, 65, 66, 67, 80, 81, 82, 95, 96, 99}
+        or weather.weather_code in rain_codes
+        or weather.daily_weather_code in rain_codes
     )
     if has_rain:
         parts.append(CLOTHING_RAIN)

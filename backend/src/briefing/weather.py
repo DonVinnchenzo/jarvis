@@ -37,6 +37,7 @@ class WeatherData:
     precip_probability: int     # percent (0-100)
     daily_max_wind: float       # km/h
     daily_weather_code: int     # WMO code
+    daily_weather_description: str  # Human-readable from daily WMO code
 
 
 async def fetch_weather() -> WeatherData | None:
@@ -71,6 +72,9 @@ async def fetch_weather() -> WeatherData | None:
             precip_probability=daily["precipitation_probability_max"][0],
             daily_max_wind=daily["wind_speed_10m_max"][0],
             daily_weather_code=daily["weather_code"][0],
+            daily_weather_description=WMO_WEATHER_CODES.get(
+                daily["weather_code"][0], "Unknown"
+            ),
         )
 
     except httpx.TimeoutException:
